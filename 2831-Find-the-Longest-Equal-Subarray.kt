@@ -9,22 +9,12 @@ class Solution {
 
         var answer = 0
         for((num, positions) in positionsByNum) {
-            var rightIndex = 0
-            for (leftIndex in positions.indices) {
-                while(true) {
-                    val deletedItems = positions[rightIndex] + 1 - positions[leftIndex] - (rightIndex + 1 - leftIndex)
-                    val isIn = deletedItems <= k
-                    if (isIn) {
-                        answer = max(answer, rightIndex + 1 - leftIndex)
-                    } else {
-                        break
-                    }
-                    if (rightIndex < positions.size - 1) {
-                        rightIndex += 1
-                    } else {
-                        break
-                    }
-                } 
+            var leftIndex = 0
+            for (rightIndex in positions.indices) {
+                while(positions[rightIndex] - positions[leftIndex] - (rightIndex - leftIndex) > k) {
+                    leftIndex += 1
+                }
+                answer = max(answer, rightIndex + 1 - leftIndex)
             }
         }
 
