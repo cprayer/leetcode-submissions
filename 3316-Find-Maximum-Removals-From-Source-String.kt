@@ -38,7 +38,7 @@ class Solution {
 
 
     companion object {
-        const val MINUS_INF = -1_000_000
+        const val MINUS_INF = -5_000
         const val UNSET = -987_654_321
     }
 
