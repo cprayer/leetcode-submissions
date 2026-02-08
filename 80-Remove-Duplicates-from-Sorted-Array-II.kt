@@ -1,6 +1,5 @@
 class Solution {
     fun removeDuplicates(nums: IntArray): Int {
-        var removedCount = 0
         var currentIndex = 0
         while (currentIndex < nums.size) {
             val num = nums[currentIndex]
@@ -9,30 +8,21 @@ class Solution {
                 count += 1
                 if (count >= 3) {
                     nums[currentIndex] = Int.MIN_VALUE
-                    removedCount += 1
                 }
                 currentIndex += 1
             }
         }
 
-        var removedIndex = nums.indexOfFirst { it == Int.MIN_VALUE }
-        var nonRemovedIndex = removedIndex
-        
-        if (removedIndex == -1) {
-            return nums.size
-        }
-        
-        while (nonRemovedIndex < nums.size) {
-            while (nonRemovedIndex < nums.size && nums[nonRemovedIndex] == Int.MIN_VALUE) {
-                nonRemovedIndex += 1
+        var writeIndex = 0
+        for (num in nums) {
+            if (num == Int.MIN_VALUE) {
+                continue
             }
-            if (nonRemovedIndex < nums.size) {
-                nums[removedIndex] = nums[nonRemovedIndex]
-                removedIndex += 1
-                nonRemovedIndex += 1
-            }
+            nums[writeIndex] = num
+            writeIndex += 1
         }
-        return nums.size - removedCount
+
+        return writeIndex
     }
 }
 
