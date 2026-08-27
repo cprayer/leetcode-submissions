@@ -1,0 +1,35 @@
+import java.lang.Integer.max
+import java.lang.Integer.min
+
+class Solution {
+    fun getMaxLen(nums: IntArray): Int {
+        var positive = 0
+        var negative = 0
+
+        var ans = 0
+        for (num in nums) {
+            when {
+                num > 0 -> {
+                    positive += 1
+                    negative = if (negative > 0) negative + 1 else 0
+                }
+
+                num < 0 -> {
+                    val previousPositive = positive
+
+                    positive = if (negative > 0) negative + 1 else 0
+                    negative = previousPositive + 1
+                }
+
+                num == 0 -> {
+                    negative = 0
+                    positive = 0
+                }
+            }
+
+            ans = max(ans, positive)
+        }
+
+        return ans
+    }
+}
