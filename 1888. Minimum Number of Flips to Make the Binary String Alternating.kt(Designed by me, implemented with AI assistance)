@@ -1,0 +1,38 @@
+class Solution {
+      fun minFlips(s: String): Int {
+          val n = s.length
+          val mismatch010 = IntArray(n + 1)
+          val mismatch101 = IntArray(n + 1)
+
+          for (i in 0 until n) {
+              val expected010 = if (i % 2 == 0) '0' else '1'
+              val expected101 = if (i % 2 == 0) '1' else '0'
+
+              mismatch010[i + 1] =
+                  mismatch010[i] + if (s[i] != expected010) 1 else 0
+              mismatch101[i + 1] =
+                  mismatch101[i] + if (s[i] != expected101) 1 else 0
+          }
+
+          var answer = n
+
+          for (i in 0..n) {
+              val suffixMismatch = if (i % 2 == 0) {
+                  mismatch010[n] - mismatch010[i]
+              } else {
+                  mismatch101[n] - mismatch101[i]
+              }
+
+              val prefixMismatch = if ((n - i) % 2 == 0) {
+                  mismatch010[i]
+              } else {
+                  mismatch101[i]
+              }
+
+              val mismatch = suffixMismatch + prefixMismatch
+              answer = minOf(answer, mismatch, n - mismatch)
+          }
+
+          return answer
+      }
+  }
