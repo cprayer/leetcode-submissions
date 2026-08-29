@@ -1,0 +1,96 @@
+class Solution {
+    fun maxProduct(nums: IntArray): Long {
+        val root = Trie()
+
+        for (num in nums) {
+            insert(root, num)
+        }
+
+        var answer = 0L
+
+        for (num in nums.toSet()) {
+            val partner = search(
+                node = root,
+                num = num,
+                bit = 20,
+            )
+
+            if (partner != null) {
+                answer = maxOf(
+                    answer,
+                    num.toLong() * partner,
+                )
+            }
+        }
+
+        return answer
+    }
+
+    private fun insert(root: Trie, num: Int) {
+        var current = root
+
+        for (bit in 20 downTo 0) {
+            val bitMask = 1 shl bit
+
+            if (num and bitMask != 0) {
+                if (current.one == null) {
+                    current.one = Trie()
+                }
+
+                current = current.one!!
+            } else {
+                if (current.zero == null) {
+                    current.zero = Trie()
+                }
+
+                current = current.zero!!
+            }
+        }
+    }
+
+    private fun search(
+        node: Trie?,
+        num: Int,
+        bit: Int,
+    ): Int? {
+        if (node == null) {
+            return null
+        }
+
+        if (bit < 0) {
+            return 0
+        }
+
+        val bitMask = 1 shl bit
+        val currentBitIsOne = num and bitMask != 0
+
+        if (currentBitIsOne) {
+            return search(
+                node = node.zero,
+                num = num,
+                bit = bit - 1,
+            )
+        }
+
+        val resultFromOne = search(
+            node = node.one,
+            num = num,
+            bit = bit - 1,
+        )
+
+        if (resultFromOne != null) {
+            return bitMask or resultFromOne
+        }
+
+        return search(
+            node = node.zero,
+            num = num,
+            bit = bit - 1,
+        )
+    }
+
+    private class Trie(
+        var zero: Trie? = null,
+        var one: Trie? = null,
+    )
+}
