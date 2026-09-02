@@ -1,0 +1,22 @@
+class Solution {
+    fun maximumXor(s: String, t: String): String {
+        val counts = IntArray(2)
+        for (ch in t) {
+            counts[ch - '0'] += 1
+        }
+
+        val ans = StringBuilder(s.length)
+        for (ch in s) {
+            val index = 1 - (ch - '0')
+            if (counts[index] > 0) {
+                ans.append('1')
+                counts[index] -= 1
+            } else {
+                ans.append('0')
+                counts[1 - index] -= 1
+            }
+        }
+
+        return ans.toString()
+    }
+}
