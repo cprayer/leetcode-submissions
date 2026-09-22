@@ -1,24 +1,30 @@
+import java.util.PriorityQueue
+
 class Solution {
     fun smallestChair(times: Array<IntArray>, targetFriend: Int): Int {
-        val flatted = times.flatMapIndexed { index: Int, ints: IntArray -> listOf(Triple(ints[0], true, index), Triple(ints[1], false, index))  }
-            .sortedWith(compareBy<Triple<Int, Boolean, Int>> { it.first }.thenBy { it.second }.thenBy { it.third })
+        val friends = times.indices.sortedBy { times[it][0] }
+        val occupied = PriorityQueue<Pair<Int, Int>>(compareBy { it.first })
+        val available = PriorityQueue<Int>()
+        var nextChair = 0
 
-        val seats = mutableMapOf<Int, Int>()
-        val pq = PriorityQueue<Int>()
-        for (i in times.indices) {
-            pq.add(i)
-        }
-        for ((time, isArrived, index) in flatted) {
-            if (isArrived) {
-                val current = pq.poll()
-                seats[index] = current
-                if (targetFriend == index) {
-                    return current
-                }
-            } else {
-                pq.add(seats[index])
+        for (friend in friends) {
+            val (arrival, leaving) = times[friend]
+
+            while (occupied.isNotEmpty() && occupied.peek().first <= arrival) {
+                available.offer(occupied.poll().second)
             }
+
+            val chair = if (available.isNotEmpty()) {
+                available.poll()
+            } else {
+                nextChair++
+            }
+
+            if (friend == targetFriend) return chair
+
+            occupied.offer(leaving to chair)
         }
+
         return -1
     }
 }
